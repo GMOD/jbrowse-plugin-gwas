@@ -9,7 +9,7 @@ import {
   isSelectionContainer,
   isSessionModelWithWidgets,
 } from '@jbrowse/core/util'
-import { cast, types } from 'mobx-state-tree'
+import { cast, types } from '@jbrowse/mobx-state-tree'
 
 import TooltipComponent from './components/TooltipComponent'
 
