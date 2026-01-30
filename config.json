@@ -155,7 +155,7 @@
     {
       "type": "VariantTrack",
       "trackId": "ieu-b-5144.vcf",
-      "name": "ieu-b-5144.vcf",
+      "name": "ieu-b-5144.vcf (chr22)",
       "adapter": {
         "type": "VcfTabixAdapter",
         "vcfGzLocation": {
