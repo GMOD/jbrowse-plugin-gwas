@@ -14,6 +14,39 @@ const TWO_PI = Math.PI * 2
 const YSCALEBAR_LABEL_OFFSET = 5
 const POINT_RADIUS = 2
 
+/**
+ * Extract score from a feature.
+ * For VCF features with GWAS data, extracts from FORMAT fields.
+ * Otherwise uses the standard 'score' attribute.
+ */
+function getScore(
+  feature: Feature,
+  scoreField?: string,
+  sampleId?: string,
+): number {
+  if (scoreField) {
+    const samples = feature.get('samples') as
+      | Record<string, Record<string, unknown[]>>
+      | undefined
+    if (samples) {
+      const sampleIds = Object.keys(samples)
+      const targetSampleId =
+        sampleId && sampleId in samples ? sampleId : sampleIds[0]
+      if (targetSampleId) {
+        const sampleData = samples[targetSampleId]
+        if (sampleData) {
+          const value = sampleData[scoreField]
+          if (value !== undefined) {
+            const numValue = Array.isArray(value) ? value[0] : value
+            return Number(numValue)
+          }
+        }
+      }
+    }
+  }
+  return feature.get('score') as number
+}
+
 interface ManhattanRenderProps extends RenderArgsDeserialized {
   features: Map<string, Feature>
   regions: Region[]
@@ -30,6 +63,9 @@ interface ManhattanRenderProps extends RenderArgsDeserialized {
   displayCrossHatches: boolean
   ticks: { values: number[] }
   highResolutionScaling?: number
+  // For GWAS-VCF support: extract score from VCF FORMAT fields
+  scoreField?: string
+  sampleId?: string
 }
 
 interface ClickMapItem {
@@ -113,6 +149,7 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
       !colorValue.includes('rgba') &&
       !colorValue.includes('hsla')
 
+    const { scoreField, sampleId } = props
     const items = this.drawPoints(ctx, {
       features,
       regionStart,
@@ -123,6 +160,8 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
       colorCallback,
       canBatch,
       stopToken,
+      scoreField,
+      sampleId,
     })
 
     if (displayCrossHatches) {
@@ -161,6 +200,8 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
       colorCallback: boolean
       canBatch: boolean
       stopToken?: string
+      scoreField?: string
+      sampleId?: string
     },
   ) {
     const {
@@ -173,6 +214,8 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
       colorCallback,
       canBatch,
       stopToken,
+      scoreField,
+      sampleId,
     } = opts
     const items: ClickMapItem[] = []
     let lastX = 0
@@ -207,7 +250,7 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
           checkTime = performance.now()
         }
         const x = (feature.get('start') - regionStart) * pxPerBp
-        const y = toY(feature.get('score'))
+        const y = toY(getScore(feature, scoreField, sampleId))
         if (addPoint(feature, x, y)) {
           ctx.moveTo(x + POINT_RADIUS, y)
           ctx.arc(x, y, POINT_RADIUS, 0, TWO_PI)
@@ -222,7 +265,7 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
           checkTime = performance.now()
         }
         const x = (feature.get('start') - regionStart) * pxPerBp
-        const y = toY(feature.get('score'))
+        const y = toY(getScore(feature, scoreField, sampleId))
         if (addPoint(feature, x, y)) {
           if (colorCallback) {
             ctx.fillStyle = readConfObject(config, 'color', { feature })
