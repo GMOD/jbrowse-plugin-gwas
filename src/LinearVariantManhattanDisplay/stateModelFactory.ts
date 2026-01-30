@@ -8,39 +8,12 @@ import {
 } from '@jbrowse/core/util'
 import { types } from '@jbrowse/mobx-state-tree'
 
+import TooltipComponent from './components/TooltipComponent'
+
 import type PluginManager from '@jbrowse/core/PluginManager'
 import type { AnyConfigurationSchemaType } from '@jbrowse/core/configuration'
 import type { Feature } from '@jbrowse/core/util'
 import type WigglePlugin from '@jbrowse/plugin-wiggle'
-
-/**
- * Extract score from a VCF feature's FORMAT fields for stats estimation.
- */
-function getScoreFromVcfFeature(
-  feature: Feature,
-  scoreField: string,
-  sampleId: string,
-) {
-  const samples = feature.get('samples') as
-    | Record<string, Record<string, unknown[]>>
-    | undefined
-  if (samples) {
-    const sampleIds = Object.keys(samples)
-    const targetSampleId =
-      sampleId && sampleId in samples ? sampleId : sampleIds[0]
-    if (targetSampleId) {
-      const sampleData = samples[targetSampleId]
-      if (sampleData) {
-        const value = sampleData[scoreField]
-        if (value !== undefined) {
-          const numValue = Array.isArray(value) ? value[0] : value
-          return Number(numValue)
-        }
-      }
-    }
-  }
-  return 0
-}
 
 export function stateModelFactory(
   pluginManager: PluginManager,
@@ -75,6 +48,13 @@ export function stateModelFactory(
       },
       /**
        * #getter
+       * Required for the y-scale bar to be displayed
+       */
+      get graphType() {
+        return 'xyplot' as const
+      },
+      /**
+       * #getter
        */
       get regionTooLarge() {
         return false
@@ -93,14 +73,9 @@ export function stateModelFactory(
       },
       /**
        * #getter
-       * Custom stats estimation feature parser that extracts scores from VCF
-       * FORMAT fields (e.g., LP field for GWAS-VCF files).
        */
-      get statsEstimationFeatureParser() {
-        const scoreField = self.scoreField
-        const sampleId = self.sampleId
-        return (feature: Feature) =>
-          getScoreFromVcfFeature(feature, scoreField, sampleId)
+      get TooltipComponent() {
+        return TooltipComponent
       },
     }))
     .actions(self => ({
@@ -130,8 +105,35 @@ export function stateModelFactory(
       },
     }))
     .views(self => {
-      const { renderProps: superRenderProps } = self
+      const {
+        renderProps: superRenderProps,
+        adapterProps: superAdapterProps,
+      } = self
       return {
+        /**
+         * #getter
+         * Synthesize a GWASVcfAdapter that wraps the parent track's VCF adapter.
+         * This allows the adapter to compute stats from VCF FORMAT fields.
+         */
+        get adapterConfig() {
+          const subadapter = getConf(self.parentTrack, 'adapter')
+          return {
+            type: 'GWASVcfAdapter',
+            subadapter,
+          }
+        },
+        /**
+         * #method
+         * Pass scoreField and sampleId to the adapter for stats calculation.
+         */
+        adapterProps() {
+          const superProps = superAdapterProps()
+          return {
+            ...superProps,
+            scoreField: self.scoreField,
+            sampleId: self.sampleId,
+          }
+        },
         /**
          * #method
          */
