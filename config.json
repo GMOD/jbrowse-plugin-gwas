@@ -151,6 +151,26 @@
           }
         }
       ]
+    },
+    {
+      "type": "VariantTrack",
+      "trackId": "ieu-b-5144.vcf",
+      "name": "ieu-b-5144.vcf (chr22)",
+      "adapter": {
+        "type": "VcfTabixAdapter",
+        "vcfGzLocation": {
+          "uri": "ieu-b-5144.vcf.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "ieu-b-5144.vcf.gz.tbi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "TBI"
+        }
+      },
+      "assemblyNames": ["hg19"]
     }
   ]
 }
