@@ -1,7 +1,7 @@
 import { readConfObject } from '@jbrowse/core/configuration'
 import FeatureRendererType from '@jbrowse/core/pluggableElementTypes/renderers/FeatureRendererType'
 import { renderToAbstractCanvas, updateStatus } from '@jbrowse/core/util'
-import { getScale } from '@jbrowse/plugin-wiggle'
+import { getScale } from '../util/getScale'
 import Flatbush from 'flatbush'
 
 import { checkStopToken } from './util'

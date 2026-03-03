@@ -2,7 +2,7 @@ import React from 'react'
 
 import { getConf } from '@jbrowse/core/configuration'
 import { SanitizedHTML } from '@jbrowse/core/ui'
-import { Tooltip } from '@jbrowse/plugin-wiggle'
+import Tooltip from '../../util/Tooltip'
 import { observer } from 'mobx-react'
 
 import type { AnyConfigurationModel } from '@jbrowse/core/configuration'
