@@ -7,6 +7,8 @@ import { observer } from 'mobx-react'
 
 import type { SimpleFeatureSerialized } from '@jbrowse/core/util'
 
+const CLICK_SEARCH_BUFFER = 3
+
 interface Props {
   width: number
   height: number
@@ -36,7 +38,12 @@ const LinearManhattanRendering = observer(function (props: Props) {
     const rect = ref.current.getBoundingClientRect()
     const x = clientX - rect.left
     const y = clientY - rect.top
-    const [firstIndex] = clickMapIndex.search(x, y, x + 3, y + 3)
+    const [firstIndex] = clickMapIndex.search(
+      x,
+      y,
+      x + CLICK_SEARCH_BUFFER,
+      y + CLICK_SEARCH_BUFFER,
+    )
     const item =
       firstIndex !== undefined ? clickMap.items[firstIndex] : undefined
     return item ? new SimpleFeature(item.feature) : undefined

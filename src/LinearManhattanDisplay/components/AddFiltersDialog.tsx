@@ -33,7 +33,12 @@ const AddFiltersDialog = observer(function ({
 }) {
   const { classes } = useStyles()
   const { activeFilters } = model
-  const [data, setData] = useState(activeFilters.join('\n'))
+  const [data, setData] = useState(
+    activeFilters
+      .filter(Boolean)
+      .map(f => f.replace(/^jexl:/, ''))
+      .join('\n'),
+  )
   const [error, setError] = useState<unknown>()
 
   useEffect(() => {
@@ -73,7 +78,11 @@ const AddFiltersDialog = observer(function ({
           </ul>
         </div>
 
-        {error ? <p className={classes.error}>{`${error}`}</p> : null}
+        {error ? (
+          <p className={classes.error}>
+            {error instanceof Error ? error.message : String(error)}
+          </p>
+        ) : null}
         <TextField
           variant="outlined"
           multiline
@@ -102,19 +111,19 @@ const AddFiltersDialog = observer(function ({
           autoFocus
           disabled={!!error}
           onClick={() => {
-            model.setJexlFilters(data.split('\n'))
+            model.setJexlFilters(
+              data
+                .split('\n')
+                .map(f => f.trim())
+                .filter(f => f)
+                .map(f => (f.startsWith('jexl:') ? f : `jexl:${f}`)),
+            )
             handleClose()
           }}
         >
           Submit
         </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            handleClose()
-          }}
-        >
+        <Button variant="contained" color="secondary" onClick={handleClose}>
           Cancel
         </Button>
       </DialogActions>

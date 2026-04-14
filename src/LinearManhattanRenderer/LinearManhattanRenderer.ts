@@ -180,6 +180,13 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
     let checkTime = performance.now()
     let i = 0
 
+    const checkStopAndTime = () => {
+      if (i++ % 100 === 0 && performance.now() - checkTime > 200) {
+        checkStopToken(stopToken)
+        checkTime = performance.now()
+      }
+    }
+
     const addPoint = (feature: Feature, x: number, y: number) => {
       if (Math.abs(x - lastX) > 1 || Math.abs(y - lastY) > 1) {
         lastX = x
@@ -202,10 +209,7 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
       ctx.fillStyle = colorValue
       ctx.beginPath()
       for (const feature of features.values()) {
-        if (i++ % 100 === 0 && performance.now() - checkTime > 200) {
-          checkStopToken(stopToken)
-          checkTime = performance.now()
-        }
+        checkStopAndTime()
         const x = (feature.get('start') - regionStart) * pxPerBp
         const y = toY(feature.get('score'))
         if (addPoint(feature, x, y)) {
@@ -214,19 +218,25 @@ export default class ManhattanPlotRenderer extends FeatureRendererType {
         }
       }
       ctx.fill()
-    } else {
-      ctx.fillStyle = colorValue
+    } else if (colorCallback) {
       for (const feature of features.values()) {
-        if (i++ % 100 === 0 && performance.now() - checkTime > 200) {
-          checkStopToken(stopToken)
-          checkTime = performance.now()
-        }
+        checkStopAndTime()
         const x = (feature.get('start') - regionStart) * pxPerBp
         const y = toY(feature.get('score'))
         if (addPoint(feature, x, y)) {
-          if (colorCallback) {
-            ctx.fillStyle = readConfObject(config, 'color', { feature })
-          }
+          ctx.fillStyle = readConfObject(config, 'color', { feature })
+          ctx.beginPath()
+          ctx.arc(x, y, POINT_RADIUS, 0, TWO_PI)
+          ctx.fill()
+        }
+      }
+    } else {
+      ctx.fillStyle = colorValue
+      for (const feature of features.values()) {
+        checkStopAndTime()
+        const x = (feature.get('start') - regionStart) * pxPerBp
+        const y = toY(feature.get('score'))
+        if (addPoint(feature, x, y)) {
           ctx.beginPath()
           ctx.arc(x, y, POINT_RADIUS, 0, TWO_PI)
           ctx.fill()
