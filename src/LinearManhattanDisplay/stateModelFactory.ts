@@ -17,6 +17,11 @@ import type PluginManager from '@jbrowse/core/PluginManager'
 import type { AnyConfigurationSchemaType } from '@jbrowse/core/configuration'
 import type { Feature } from '@jbrowse/core/util'
 import type WigglePlugin from '@jbrowse/plugin-wiggle'
+import * as d3scale from 'd3-scale'
+import * as mobx from 'mobx'
+
+// avoid crazy typescript errors
+export type { mobx, d3scale }
 
 // lazies
 const AddFiltersDialog = lazy(() => import('./components/AddFiltersDialog'))
@@ -141,7 +146,10 @@ export function stateModelFactory(
               onClick: () => {
                 getSession(self).queueDialog(handleClose => [
                   AddFiltersDialog,
-                  { model: self, handleClose },
+                  {
+                    model: self,
+                    handleClose,
+                  },
                 ])
               },
             },

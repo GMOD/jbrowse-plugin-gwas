@@ -32,6 +32,8 @@
     "test:e2e": "vitest run test/",
     "pretest:e2e": "test -d .test-jbrowse-nightly || jbrowse create .test-jbrowse-nightly --nightly",
     "prepack": "yarn build",
+    "preversion": "yarn lint",
+    "version": "node -e \"console.log('export const version = \\'' + require('./package.json').version + '\\'')\" > src/version.ts && git add src/version.ts",
     "postversion": "git push --follow-tags"
   },
   "devDependencies": {
@@ -78,5 +80,9 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.58.2",
     "vitest": "^4.1.4"
+  },
+  "dependencies": {
+    "@types/d3-scale": "^4.0.9",
+    "d3-scale": "^4.0.2"
   }
 }

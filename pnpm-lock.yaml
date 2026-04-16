@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@types/d3-scale':
+        specifier: ^4.0.9
+        version: 4.0.9
+      d3-scale:
+        specifier: ^4.0.2
+        version: 4.0.2
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0

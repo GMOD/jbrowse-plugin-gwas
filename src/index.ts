@@ -7,7 +7,7 @@ import GuessAdapterF from './GuessAdapter'
 import LinearManhattanDisplayF from './LinearManhattanDisplay'
 import JexlMouseoverF from './LinearManhattanDisplay/jexlMouseover'
 import LinearManhattanRendererF from './LinearManhattanRenderer'
-import { version } from '../package.json'
+import { version } from './version'
 
 import type PluginManager from '@jbrowse/core/PluginManager'
 
