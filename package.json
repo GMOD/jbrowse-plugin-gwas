@@ -3,8 +3,11 @@
   "license": "MIT",
   "author": "Colin Diesh",
   "name": "jbrowse-plugin-gwas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GMOD/jbrowse-plugin-gwas.git"
+  },
   "description": "JBrowse 2 GWAS API plugin",
-  "repository": "github:cmdcolin/jbrowse-plugin-gwas",
   "keywords": [
     "jbrowse",
     "jbrowse2"
