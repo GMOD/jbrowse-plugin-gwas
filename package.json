@@ -21,8 +21,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "format": "yarn prettier --write .",
-    "prebuild": "yarn clean",
+    "format": "pnpm prettier --write .",
+    "prebuild": "pnpm clean",
     "start": "node esbuild.mjs --watch",
     "build": "tsc && NODE_ENV=production node esbuild.mjs",
     "build:bundle": "NODE_ENV=production node esbuild.mjs",
@@ -31,8 +31,8 @@
     "test": "vitest run",
     "test:e2e": "vitest run test/",
     "pretest:e2e": "test -d .test-jbrowse-nightly || jbrowse create .test-jbrowse-nightly --nightly",
-    "prepack": "yarn build",
-    "preversion": "yarn lint",
+    "prepack": "pnpm build",
+    "preversion": "pnpm lint",
     "version": "node -e \"console.log('export const version = \\'' + require('./package.json').version + '\\'')\" > src/version.ts && git add src/version.ts",
     "postversion": "git push --follow-tags"
   },
