@@ -1,11 +1,12 @@
 import eslint from '@eslint/js'
-import importPlugin from 'eslint-plugin-import'
+import { defineConfig } from 'eslint/config'
+import { importX } from 'eslint-plugin-import-x'
 import eslintPluginReact from 'eslint-plugin-react'
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks'
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 import tseslint from 'typescript-eslint'
 
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: [
       'eslint.config.mjs',
@@ -24,7 +25,7 @@ export default tseslint.config(
 
     settings: {
       react: {
-        version: 'detect',
+        version: 'v19.2.5',
       },
     },
   },
@@ -33,7 +34,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   ...tseslint.configs.stylisticTypeChecked,
   ...tseslint.configs.strictTypeChecked,
-  importPlugin.flatConfigs.recommended,
+  importX.flatConfigs.recommended,
   eslintPluginReact.configs.flat.recommended,
   {
     plugins: {
@@ -41,7 +42,7 @@ export default tseslint.config(
     },
     rules: eslintPluginReactHooks.configs.recommended.rules,
   },
-  eslintPluginUnicorn.configs['flat/recommended'],
+  eslintPluginUnicorn.configs.recommended,
   {
     rules: {
       'no-restricted-globals': ['error', 'Buffer'],
@@ -63,8 +64,8 @@ export default tseslint.config(
         },
       ],
 
-      'import/no-unresolved': 'off',
-      'import/order': [
+      'import-x/no-unresolved': 'off',
+      'import-x/order': [
         'error',
         {
           named: true,
