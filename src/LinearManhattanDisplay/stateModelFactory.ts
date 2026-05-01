@@ -17,11 +17,11 @@ import type PluginManager from '@jbrowse/core/PluginManager'
 import type { AnyConfigurationSchemaType } from '@jbrowse/core/configuration'
 import type { Feature } from '@jbrowse/core/util'
 import type WigglePlugin from '@jbrowse/plugin-wiggle'
-import * as d3scale from 'd3-scale'
-import * as mobx from 'mobx'
+import type * as d3scale from 'd3-scale'
+import type * as mobx from 'mobx'
 
 // avoid crazy typescript errors
-export type { mobx, d3scale }
+export type { d3scale, mobx }
 
 // lazies
 const AddFiltersDialog = lazy(() => import('./components/AddFiltersDialog'))

@@ -27,7 +27,9 @@ const GWASAddTrackComponent = observer(function ({
       label="Score column"
       helperText="Name of the column to use as the score for the Manhattan plot (e.g., 'neg_log_pvalue', 'pvalue')"
       value={scoreColumn}
-      onChange={e => setScoreColumn(e.target.value)}
+      onChange={e => {
+        setScoreColumn(e.target.value)
+      }}
       fullWidth
     />
   )
