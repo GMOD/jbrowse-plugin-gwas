@@ -1,13 +1,10 @@
 import React, { useMemo, useRef } from 'react'
 
 import { PrerenderedCanvas } from '@jbrowse/core/ui'
-import { SimpleFeature } from '@jbrowse/core/util'
 import Flatbush from 'flatbush'
 import { observer } from 'mobx-react'
 
 import type { SimpleFeatureSerialized } from '@jbrowse/core/util'
-
-const CLICK_SEARCH_BUFFER = 3
 
 interface Props {
   width: number
@@ -38,15 +35,10 @@ const LinearManhattanRendering = observer(function (props: Props) {
     const rect = ref.current.getBoundingClientRect()
     const x = clientX - rect.left
     const y = clientY - rect.top
-    const [firstIndex] = clickMapIndex.search(
-      x,
-      y,
-      x + CLICK_SEARCH_BUFFER,
-      y + CLICK_SEARCH_BUFFER,
-    )
+    const [firstIndex] = clickMapIndex.search(x, y, x, y)
     const item =
       firstIndex !== undefined ? clickMap.items[firstIndex] : undefined
-    return item ? new SimpleFeature(item.feature) : undefined
+    return item?.feature.uniqueId
   }
 
   return (
@@ -54,10 +46,10 @@ const LinearManhattanRendering = observer(function (props: Props) {
       ref={ref}
       data-testid="manhattan-rendering"
       onMouseMove={e =>
-        onMouseMove?.(e, getFeatureUnderMouse(e.clientX, e.clientY)?.id())
+        onMouseMove?.(e, getFeatureUnderMouse(e.clientX, e.clientY))
       }
       onClick={e =>
-        onFeatureClick?.(e, getFeatureUnderMouse(e.clientX, e.clientY)?.id())
+        onFeatureClick?.(e, getFeatureUnderMouse(e.clientX, e.clientY))
       }
       onMouseLeave={onMouseLeave}
       style={{

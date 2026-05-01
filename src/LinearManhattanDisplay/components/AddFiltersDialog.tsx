@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Dialog } from '@jbrowse/core/ui'
 import { stringToJexlExpression } from '@jbrowse/core/util/jexlStrings'
@@ -39,22 +39,18 @@ const AddFiltersDialog = observer(function ({
       .map(f => f.replace(/^jexl:/, ''))
       .join('\n'),
   )
-  const [error, setError] = useState<unknown>()
 
-  useEffect(() => {
-    try {
-      for (const line of data.split('\n')) {
-        const trimmed = line.trim()
-        if (trimmed) {
-          stringToJexlExpression(trimmed)
-        }
+  let error: unknown
+  try {
+    for (const line of data.split('\n')) {
+      const trimmed = line.trim()
+      if (trimmed) {
+        stringToJexlExpression(trimmed)
       }
-      setError(undefined)
-    } catch (e) {
-      console.error(e)
-      setError(e)
     }
-  }, [data])
+  } catch (e) {
+    error = e
+  }
 
   return (
     <Dialog maxWidth="xl" open onClose={handleClose} title="Add track filters">

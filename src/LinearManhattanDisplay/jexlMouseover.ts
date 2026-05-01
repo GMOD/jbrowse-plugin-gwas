@@ -17,7 +17,8 @@ function getTooltip(feature: Feature) {
     .filter(f => !!f)
     .join(':')
 
-  return `${loc}<br/>${toP(feature.get('score'))}<br/>${name || rsid}`
+  const nameOrId = name || rsid
+  return `${loc}<br/>${toP(feature.get('score'))}${nameOrId ? `<br/>${nameOrId}` : ''}`
 }
 
 export default function JexlMouseoverF(pluginManager: PluginManager) {
