@@ -1,6 +1,6 @@
 import { YSCALEBAR_LABEL_OFFSET } from '@jbrowse/plugin-wiggle'
 
-import type { ManhattanRegionData, ManhattanRenderState } from './manhattanBackendTypes'
+import type { ManhattanRenderState } from './manhattanBackendTypes'
 import type { RenderBlock } from '@jbrowse/core/gpu/renderBlock'
 
 export interface ManhattanHit {
@@ -9,13 +9,19 @@ export interface ManhattanHit {
   score: number
 }
 
+interface RegionScores {
+  positions: Uint32Array
+  scores: Float32Array
+  numFeatures: number
+}
+
 const HIT_RADIUS_PX = 8
 
 export function findManhattanHit(
   mouseX: number,
   mouseY: number,
   renderBlocks: RenderBlock[],
-  regionData: Map<number, ManhattanRegionData>,
+  regionData: ReadonlyMap<number, RegionScores>,
   state: ManhattanRenderState,
   refNames: Map<number, string>,
 ): ManhattanHit | undefined {

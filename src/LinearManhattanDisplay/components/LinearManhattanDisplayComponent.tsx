@@ -9,7 +9,8 @@ import { findManhattanHit } from '../findManhattanHit'
 import TooltipComponent from './TooltipComponent'
 
 import type { ManhattanHit } from '../findManhattanHit'
-import type { ManhattanBackend, ManhattanRegionData, ManhattanRenderState } from '../manhattanBackendTypes'
+import type { ManhattanBackend, ManhattanRenderState } from '../manhattanBackendTypes'
+import type { ManhattanRpcResult } from '../../RenderManhattanDataRPC/rpcTypes'
 import type { TooltipModel } from './TooltipComponent'
 import type { RenderBlock } from '@jbrowse/core/gpu/renderBlock'
 import type { GpuLifecycleModel } from '@jbrowse/core/util/useGpuModelLifecycle'
@@ -28,7 +29,7 @@ interface LGV {
 interface ManhattanDisplayModel extends GpuLifecycleModel<ManhattanBackend>, TooltipModel {
   canvasDrawn: boolean
   height: number
-  manhattanRpcDataMap: ObservableMap<number, ManhattanRegionData>
+  manhattanRpcDataMap: ObservableMap<number, ManhattanRpcResult>
   manhattanRenderState: ManhattanRenderState | undefined
   renderBlocks: RenderBlock[]
   setManhattanFeatureUnderMouse(hit: ManhattanHit | undefined): void
@@ -62,7 +63,7 @@ const LinearManhattanDisplayComponent = observer(function LinearManhattanDisplay
           event.clientX - rect.left,
           event.clientY - rect.top,
           renderBlocks,
-          manhattanRpcDataMap as unknown as Map<number, ManhattanRegionData>,
+          manhattanRpcDataMap,
           manhattanRenderState,
           refNames,
         ),
