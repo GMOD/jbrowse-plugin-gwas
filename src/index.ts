@@ -7,6 +7,7 @@ import GuessAdapterF from './GuessAdapter'
 import LinearManhattanDisplayF from './LinearManhattanDisplay'
 import JexlMouseoverF from './LinearManhattanDisplay/jexlMouseover'
 import LinearManhattanRendererF from './LinearManhattanRenderer'
+import RenderManhattanDataRPCF from './RenderManhattanDataRPC'
 import { version } from './version'
 
 import type PluginManager from '@jbrowse/core/PluginManager'
@@ -23,5 +24,6 @@ export default class GWASPlugin extends Plugin {
     LinearManhattanDisplayF(pluginManager)
     LinearManhattanRendererF(pluginManager)
     JexlMouseoverF(pluginManager)
+    RenderManhattanDataRPCF(pluginManager)
   }
 }

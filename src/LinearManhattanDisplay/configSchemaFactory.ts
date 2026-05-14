@@ -51,6 +51,11 @@ export function configSchemaFactory(pluginManager: PluginManager) {
           'number of standard deviations to use for autoscale types globalsd or localsd',
         defaultValue: 3,
       },
+      jexlFilters: {
+        type: 'stringArray',
+        defaultValue: [],
+        description: 'jexl filter expressions (applied client-side)',
+      },
       scaleType: {
         type: 'stringEnum',
         model: types.enumeration('Scale type', ['linear', 'log']), // todo zscale

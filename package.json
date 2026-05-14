@@ -27,6 +27,7 @@
     "build": "tsc && NODE_ENV=production node esbuild.mjs",
     "build:bundle": "NODE_ENV=production node esbuild.mjs",
     "postbuild": "cp distconfig.json dist/config.json",
+    "gen:shaders": "node --experimental-strip-types scripts/build-shaders.ts",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
     "test": "vitest run",
     "test:e2e": "vitest run test/",

@@ -1,40 +1,38 @@
 import React from 'react'
 
-import { getConf } from '@jbrowse/core/configuration'
-import { SanitizedHTML } from '@jbrowse/core/ui'
-import { Tooltip } from '@jbrowse/plugin-wiggle'
+import BaseTooltip from '@jbrowse/core/ui/BaseTooltip'
+import { toLocale } from '@jbrowse/core/util'
 import { observer } from 'mobx-react'
 
-import type { AnyConfigurationModel } from '@jbrowse/core/configuration'
-import type { Feature } from '@jbrowse/core/util'
+import type { ManhattanHit } from '../findManhattanHit'
 
-export interface Props {
-  feature: Feature
-  model: Model
-}
-export interface Model {
-  configuration: AnyConfigurationModel
-  featureUnderMouse?: Feature
+export interface TooltipModel {
+  manhattanFeatureUnderMouse: ManhattanHit | undefined
 }
 
-const TooltipContents = React.forwardRef<HTMLDivElement, Props>(
-  function TooltipContents2({ model, feature }, ref) {
-    return (
-      <div ref={ref}>
-        <SanitizedHTML html={getConf(model, 'mouseover', { feature })} />
-      </div>
-    )
-  },
-)
-
-const TooltipComponent = observer(function (props: {
-  model: Model
-  height: number
-  offsetMouseCoord: [number, number]
+const TooltipComponent = observer(function TooltipComponent({
+  model,
+  clientMouseCoord,
+}: {
+  model: TooltipModel
   clientMouseCoord: [number, number]
-  clientRect?: DOMRect
 }) {
-  return <Tooltip TooltipContents={TooltipContents} {...props} />
+  const { manhattanFeatureUnderMouse } = model
+  if (!manhattanFeatureUnderMouse) {
+    return null
+  }
+  const { refName, start, score } = manhattanFeatureUnderMouse
+  return (
+    <BaseTooltip
+      clientPoint={{ x: clientMouseCoord[0] + 10, y: clientMouseCoord[1] }}
+    >
+      <div>
+        {refName}:{toLocale(start)}
+        <br />
+        score: {score.toPrecision(4)}
+      </div>
+    </BaseTooltip>
+  )
 })
 
 export default TooltipComponent
